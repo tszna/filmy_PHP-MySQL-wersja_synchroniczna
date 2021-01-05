@@ -1,0 +1,2 @@
+# filmy_PHP-wersja_synchroniczna
+Jest to projekt filmy_PHP znajdujący się e jednym z moich repozytoriów przerobiony na wersję synchroniczną, dzięki czemu po kliknięciu na przycisk paginatora lub wybraniu filtrów filmów, strona zostaje przeładowana i pojawia się link w pasku przeglądarki przy pomocy którego można w szybki sposób zastosować filtry i/lub stronę paginatora. Instalacja odbywa się dokładnie w ten sam sposób jak w przypadku aplikacji filmy_PHP.
