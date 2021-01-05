@@ -1,0 +1,22 @@
+# Opcje: Pozwalaj na przyjazne linki oraz nie pozwlaj wyświetleać listy plików w katalogu
+Options +FollowSymLinks -Indexes
+# Włączenie silnika przekierowań (przyjaznych adresów)
+RewriteEngine On
+# Nie szukać przyjaznych linków gdy adres jest adresem pliku, np. http://localhost/filmy/js/jquery.min.js
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# RewriteRule .* index.php [L]
+# Przjazne linki
+RewriteRule ^film/(\d+)/?$ index.php?controller=Film&action=getFilmById&id=$1 [L]
+RewriteRule ^lista/?$ index.php?controller=Film&action=ajaxList [L]
+RewriteRule ^szukaj-tytulu/?$ index.php?controller=Film&action=ajaxFindTitle [L]
+RewriteRule ^home/?$ index.php?controller=Home&action=index [L]
+RewriteRule ^user/?$ index.php?controller=User&action=index [L]
+RewriteRule ^user/add/?$ index.php?controller=User&action=add [L]
+RewriteRule ^user/create/?$ index.php?controller=User&action=create [L]
+RewriteRule ^user/permissions-form/(\d+)/?$ index.php?controller=User&action=permissionsForm&id=$1 [L]
+RewriteRule ^user/store-permissions/?$ index.php?controller=User&action=permissionsStore [L]
+RewriteRule ^user/login-form/?$ index.php?controller=User&action=loginForm [L]
+RewriteRule ^user/login/?$ index.php?controller=User&action=login [L]
+RewriteRule ^user/logout/?$ index.php?controller=User&action=logout [L]
+RewriteRule ^/?$ index.php?controller=Home&action=index [L]

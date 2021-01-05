@@ -1,0 +1,30 @@
+{% extends './base.html.twig' %}
+{% block title %}Użytkownicy{% endblock %}
+
+{% block body %}
+	<div class="user__container">
+		<a class="btn btn-success" href="{{ appurl }}user/add">+ Dodaj</a>
+
+		<table class="user__table">
+			<thead>
+				<tr>
+					<td>Id</td>
+					<td>Login</td>
+					<td>Akcja</td>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for user in users %}
+					<tr>
+						<td>{{ user['id'] }}</td>
+						<td>{{ user['login'] }}</td>
+						<td>
+							<a class="btn" href="{{ appurl }}user/permissions-form/{{ user['id'] }}/">Uprawnienia</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

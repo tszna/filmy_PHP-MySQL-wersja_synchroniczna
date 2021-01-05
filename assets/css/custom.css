@@ -1,0 +1,38 @@
+html, body {
+	overflow-x: hidden; /* makes the scroll on the x-axys unreachable */
+	
+}
+
+.filter {
+	/*margin-left: 2vw;
+	margin-right: 2vw;*/
+}
+.select2-container {
+width: 100% !important;
+padding: 0;
+}
+.select2-container .select2-selection--single{
+	min-height: 36px;
+}
+.select2-container .select2-selection--single .select2-selection__rendered{
+	padding-top: 3px;
+}
+.search-b .col-md-3{
+	padding: 0px 5px 0px 5px;
+}
+
+.formis {
+    
+    display: none;
+    
+  }
+@media only screen and (max-width: 640px) {
+  .search-b .col-md-3{
+  	max-width: 100%;
+  	margin: 5px 0px;
+
+  }
+  .search-b.d-flex{
+  	display: block !important;
+  }
+}

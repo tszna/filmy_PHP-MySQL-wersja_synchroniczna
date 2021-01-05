@@ -1,0 +1,31 @@
+{% extends './base.html.twig' %}
+{% block title %}Uprawnienia użytkownika {{ user['login'] }}{% endblock %}
+
+{% block body %}
+	<div class="form">
+		<form action="{{ appurl }}user/store-permissions" method="post">
+			<input type="hidden" name="user_id" value="{{ user['id'] }}">
+
+			{% for permissionId, permissionName in permissions %}
+				<div class="form__group">
+					<label for="perm-{{ permissionId }}">
+						<input
+							type="checkbox"
+							name="permission[{{ permissionId }}]"
+							id="perm-{{ permissionId }}"
+							{% if permissionId in assiged %}
+								checked
+							{% endif %}
+							/>
+						{{ permissionName }}
+					</label>
+				</div>
+			{% endfor %}
+
+			<div>
+				<button class="btn" type="submit">Zapisz</button>
+				<a class="btn" href="{{ appurl }}user" >Powrót</a>
+			</div>
+		</form>
+	</div>
+{% endblock %}

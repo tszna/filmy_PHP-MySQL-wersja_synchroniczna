@@ -1,0 +1,25 @@
+{% extends './base.html.twig' %}
+{% block title %}{{ film['title'] }}{% endblock %}
+
+{% block body %}
+	<div class="main__subchildren">
+		<div class="title__image">
+			<img class="title__img" src="{{ film['img'] }}" alt="img">
+		</div>
+		<h4 class="title__main">{{ film['title'] }}</h4>
+		<h5 class="title__sub">{{ film['original_title'] }}</h5>
+		<p class="title__year">{{ film['year'] }}</p>
+		<p class="categories">Kategorie</p>
+		<ul class="category__list">
+			{% for key, item in film['category'] %}
+			    <li class="category">{{ item }}</li>
+			{% endfor %}
+		</ul>
+		<p class="directors">Reżyseria</p>
+		<ul class="director__list">
+			{% for key, item in film['director'] %}
+			    <li class="director">{{ item }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}

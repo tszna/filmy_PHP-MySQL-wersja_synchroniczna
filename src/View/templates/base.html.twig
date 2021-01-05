@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		{% for asset in assets %}
+		    {% if 'assets/css/' in asset %}
+				<link rel="stylesheet" href="{{ appurl }}{{ asset }}">
+			{% endif %}
+		{% endfor %}
+		{% block afterstyles %}{% endblock %}
+	</head>
+	<body>
+		<div class="container">
+
+		    <div class="content">
+
+				<nav class="nav">
+					<ul class="nav__links">
+						<li class="nav__link">
+							<a>{{ hello }} {{ loggedInUser['login'] }}</a>
+						</li>
+						<li class="nav__link">
+							<a href="{{ appurl }}">Strona główna</a>
+						</li>
+						<div class="dropdown">
+							<span onclick="dropdown()" class="dropbtn">Menu &#9660;</span>
+							<div id="dropdown-toggle" class="dropdown-content">
+								<li><a class="dropdown-item" href="{{ appurl }}user/">Użytkownicy</a></li>
+								{% if loggedInUser is empty %}
+								<li><a class="dropdown-item" href="{{ appurl }}user/login-form">Zaloguj</a></li>
+								{% else %}
+								<li><a class="dropdown-item" href="{{ appurl }}user/logout">Wyloguj</a></li>
+								{% endif %}
+							</div>
+						</div> 
+					</ul>
+				</nav>
+
+  			{% if message['error'] is defined %}
+  				<div class="alert alert-danger">
+  					{{ message['error'] }}
+  				</div>
+  			{% endif %}
+
+  			{% if message['success'] is defined %}
+  				<div class="alert alert-success">
+  					{{ message['success'] }}
+  				</div>
+  			{% endif %}
+
+		      <div class="main">
+		        <div class="main__children">
+		        	<div class="main__subchildren">
+		        		<div class="main__subchildren">
+							<h4 class="title">{% block title %}{% endblock %}</h4>
+						</div>
+		        	</div>
+
+					{% block body %}{% endblock %}
+		        </div>
+		      </div>
+		    </div>
+
+		</div>
+
+	{% for asset in assets %}
+		{% if 'assets/js/' in asset %}
+			<script src="{{ appurl }}{{ asset }}" charset="utf-8"></script>
+		{% endif %}
+	{% endfor %}
+{% block afterscripts %}{% endblock %}
+
+
+<script>
+	function dropdown() {
+		document.getElementById("dropdown-toggle").classList.toggle("show");
+	}
+
+	window.onclick = function(event) {
+		if (!event.target.matches('.dropbtn')) {
+			var dropdowns = document.getElementsByClassName("dropdown-content");
+			var i;
+			for (i = 0; i < dropdowns.length; i++) {
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('show')) {
+				openDropdown.classList.remove('show');
+			}
+			}
+		}
+	} 
+</script>
+</body>
+</html>

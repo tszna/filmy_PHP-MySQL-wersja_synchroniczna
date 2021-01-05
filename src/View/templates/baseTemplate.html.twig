@@ -1,0 +1,316 @@
+{% extends './base.html.twig' %}
+{% block title %}Filmy{% endblock %}
+
+{% block body %}
+<div class="filters filter__container search-b">
+	{% if can('year') %}
+		<div class="filter__item">
+			<input data-name="year" type="text" name="year" id="year" class="form__input main__subchildren filter"  placeholder="Rok wydania" value="{{ filters['year'] }}" />
+		</div>
+	{% endif %}
+	
+	{% if can('category') %}
+		<div class="filter__item">
+			<select data-name="category" class="form__input main__subchildren filter" id="category" data-placeholder="Kategoria" name="category[]" multiple>
+				<option {% if filters['category'] is defined and "1" in filters['category'] %}selected{% endif %} value="1">Akcja</option>
+				<option {% if filters['category'] is defined and "2" in filters['category'] %}selected{% endif %} value="2">Horror</option>
+				<option {% if filters['category'] is defined and "3" in filters['category'] %}selected{% endif %} value="3">Fantasy</option>
+				<option {% if filters['category'] is defined and "4" in filters['category'] %}selected{% endif %} value="4">Komedia</option>
+				<option {% if filters['category'] is defined and "5" in filters['category'] %}selected{% endif %} value="5">Dramat</option>
+				<option {% if filters['category'] is defined and "6" in filters['category'] %}selected{% endif %} value="6">Animacja</option>
+				<option {% if filters['category'] is defined and "7" in filters['category'] %}selected{% endif %} value="7">Romans</option>
+				<option {% if filters['category'] is defined and "8" in filters['category'] %}selected{% endif %} value="8">Wojenny</option>
+				<option {% if filters['category'] is defined and "9" in filters['category'] %}selected{% endif %} value="9">Sci-Fi</option>
+				<option {% if filters['category'] is defined and "10" in filters['category'] %}selected{% endif %} value="10">Thriller</option>
+			</select>
+		</div>
+	{% endif %}
+
+	{% if can('title') %}
+		<div class="filter__item">
+			<input data-name="title" type="text" id="title" name="title" class="form__input main__subchildren filter" placeholder="Tytuł" value="{{ filters['title'] }}" />
+			<div class="" id="' + this.name + '-results" style="display: none;">
+				<div class="lists results"></div>
+			</div>
+		
+		</div>
+	{% endif %}
+
+	{% if can('director') %}
+		<div class="filter__item">
+			<select data-name="director" class="form__input main__subchildren filter" id="director"  name="director">
+				<option {% if filters['director'] is not defined %}selected{% endif %} value>Reżyser</option>
+				<option {% if filters['director'] is defined and filters['director'] == 1 %}selected{% endif %} value="1">Author One</option>
+				<option {% if filters['director'] is defined and filters['director'] == 2 %}selected{% endif %} value="2">Director One</option>
+				<option {% if filters['director'] is defined and filters['director'] == 3 %}selected{% endif %} value="3">Author Two</option>
+				<option {% if filters['director'] is defined and filters['director'] == 4 %}selected{% endif %} value="4">Steven Spielberg</option>
+				<option {% if filters['director'] is defined and filters['director'] == 5 %}selected{% endif %} value="5">M. Night Shyamalan</option>
+				<option {% if filters['director'] is defined and filters['director'] == 6 %}selected{% endif %} value="6">Olivier Nakache</option>
+				<option {% if filters['director'] is defined and filters['director'] == 7 %}selected{% endif %} value="7">Todd Phillips</option>
+				<option {% if filters['director'] is defined and filters['director'] == 8 %}selected{% endif %} value="8">Gabriele Muccino</option>
+				<option {% if filters['director'] is defined and filters['director'] == 9 %}selected{% endif %} value="9">J. Mackye Gruber</option>
+				<option {% if filters['director'] is defined and filters['director'] == 10 %}selected{% endif %} value="10">Clint Eastwood</option>
+				<option {% if filters['director'] is defined and filters['director'] == 11 %}selected{% endif %} value="11">Christopher Nolan</option>
+				<option {% if filters['director'] is defined and filters['director'] == 12 %}selected{% endif %} value="12">Mark Herman</option>
+			</select>
+		</div>
+	{% endif %}
+
+	{% if can('year') or can('category') or can('title') or can('director') %}
+		<button id="reload-btn" class="formis" data-url="{{ pageUrlBase }}{{ page }}">Szukaj</button>
+	{% endif %}
+
+
+
+
+</div>
+
+<div id="results" class="lists">
+	{% for film in films %}
+	<div class="films">
+		<div class="film">
+			<div class="film__image">
+				<img src={{ film['img'] }} class="film__img" alt="...">
+			</div>
+			<div class="film__firstcolumn">
+				<p>Tytuł PL: <span style="color:blue"> {{ film['title'] }} </span></p>
+				<p>Tytuł ORG: <span style="color:blue">{{ film['original_title'] }}</span></p>
+				<p>Kategoria: <span style="color:blue">{{ film['category']|join(', ') }}</span></p>
+			</div>
+			<div class="film__secondcolumn">
+				<p>Rok wydania: <span style="color:blue">{{ film['year'] }}</span></p>
+				<p>Reżyser: <span style="color:blue">{{ film['director']|join(', ') }}</span></p>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+<div id="paginate">
+	<div class="pagination__container" id="pagination-wrapper">
+		<div id="first">
+			<a href="{{ pageUrlBase }}{{ 0 }}{{ pageUrlFilters }}" id="paginate-button-3" class="btn btn-primary {% if page == 0 %}disabled{% endif %}"><<</a>
+		</div>
+		<div id="prev">
+			<!-- 
+			Strona (w kodzie/dla usera):
+			0/1: max(0, -1)
+			1/2: max(0, 0)
+			2/3: max(0, 1)
+		 -->
+			<a href="{{ pageUrlBase }}{{ max(0, (page - 1)) }}{{ pageUrlFilters }}" id="paginate-button-1" class="btn btn-primary {% if page == 0 %}disabled{% endif %}"><</a>
+		</div>
+
+		<div id="mid" class="d-flex justify-content-center">
+			{% if (page - 1) > 0 %}
+				<a id="paginate-button-5" class="btn btn-dark disabled" disabled>...</a>
+			{% endif %}
+
+			{% for pageNumber in (page - 1)..(page + 1) %}
+				{% if pageNumber >= 0 and pageNumber < numberOfPages %}
+					<a {% if pageNumber != page %}href="{{ pageUrlBase }}{{ pageNumber }}{{ pageUrlFilters }}"{% endif %} id="paginate-button-6" class="btn btn-primary {% if pageNumber == page %}btn-info disabled{% endif %}" {% if pageNumber == page %}disabled{% endif %}>{{ pageNumber + 1 }}</a>
+				{% endif %}
+			{% endfor %}
+
+			{% if (page + 1) < (numberOfPages - 1) %}
+				<a id="paginate-button-9" class="btn btn-dark disabled" disabled>...</a>
+			{% endif %}
+		</div>
+
+		<div id="next">
+			<!-- 
+			Założenie: liczba stron wynosi 5 (numberOfPages)
+			Strona (w kodzie/dla usera):
+			2/3: min(4, 3)
+			3/4: min(4, 4)
+			4/5: min(4, 5)
+		    -->
+			<a href="{{ pageUrlBase }}{{ min((numberOfPages - 1), (page + 1)) }}{{ pageUrlFilters }}" id="paginate-button-2"  class="btn btn-primary {% if page == (numberOfPages - 1) %}disabled{% endif %}">></a>
+		</div>
+		<div id="last">
+			<a href="{{ pageUrlBase }}{{ numberOfPages - 1 }}{{ pageUrlFilters }}" id="paginate-button-4" class="btn btn-primary {% if (numberOfPages - 1) == page %}disabled{% endif %}">>></a>
+		</div>
+	</div>
+
+	<h5>Strona <i>{{ page + 1 }}</i> z <i>{{ numberOfPages }}</i></h5>
+</div>
+{% endblock %}
+
+
+{% block afterscriptss %}
+<script type="text/javascript">
+	// Funkcja zmieniająca stronę
+	var changePage;
+	// Obecny numer strony (numerowany od 0)
+	var page = 0;
+	// Film od którego chcemy pobrać okręsloną liczbę filmów (np. od 5. filmu do 10m filmu)
+	var offset = 0;
+	// Liczba filmów na stronę
+	var limit = 2;
+	// Jest następna strona?
+	var hasNextPage = false;
+	// Całkowita liczba stron
+	var numberOfPages = 0;
+
+	var array_values = function (element) {
+		let tablica_kluczy_obiektu = Object.keys(element);
+		let funkcja_iterujaca_po_elementach_tablicy = function(i) {
+			return element[i];
+		};
+		return tablica_kluczy_obiektu.map(funkcja_iterujaca_po_elementach_tablicy);
+		
+	};
+
+	var filmBox = new FilmBox($('#results'));
+
+	var filtersArray = [];
+
+	{% if can('year') %}
+		var filterYear = new YearFilter({
+			name: 'year',
+			placeholder: 'Rok wydania',
+			type: 'text'
+		});
+		filtersArray.push(filterYear);
+	{% endif %}
+
+	{% if can('category') %}
+		var filterCategory = new CategoryFilter({
+			name: 'category',
+			multiple: true
+		});
+		filtersArray.push(filterCategory);
+	{% endif %}
+
+	{% if can('title') %}
+		var filterTitle = new TitleFilter({
+			name: 'title',
+			placeholder: 'Tytuł',
+			type: 'text'
+		});
+		filtersArray.push(filterTitle);
+	{% endif %}
+
+	{% if can('director') %}
+		var filterDirector = new DirectorFilter({
+			name: 'director',
+			multiple: false
+		});
+		filtersArray.push(filterDirector);
+	{% endif %}
+
+
+	var pagination = new Pagination({
+		prevLimit: 3,
+		nextLimit: 3,
+		container: $('#paginate')
+	});
+
+	var filters = new Filters({
+		filters: filtersArray,
+		url: 'http://localhost/filmy/lista',
+		filtersElement: $('.filters')
+	});
+
+	filters.init();
+	{% if can('title') %}
+		filterTitle.initSearch('http://localhost/filmy/szukaj-tytulu');
+	{% endif %}
+	SelectFilter.init();
+	InputFilter.init();
+	pagination.render();
+	
+
+
+	var changePage = function(newPage) {
+		page = newPage;
+		offset = limit * page;
+		filters.filter(true);
+	};
+
+	filters.filter(false);
+
+	$('select').select2({
+		containerCss: {
+			"height": "100%"
+		}
+	});
+</script>
+{% endblock %}
+{% block afterstyles %}
+<style>
+	#title-results {
+		overflow-y: scroll;
+		position: absolute;
+		top: calc(2.25rem + 2px);
+		z-index: 10;
+		background-color:white;
+		box-shadow: 0 0 0 0.1rem rgba(52, 58, 64, 0.5);
+		width: 91%;
+	}
+
+	.hoverable {
+		color: inherit;
+		padding: 0.3rem;
+	}
+
+	.hoverable:hover {
+		background-color: #dddddd;
+		text-decoration: none;
+		color: inherit;
+	}
+	#reload-btn {
+  		background-color: #4CAF50;
+  		border: none;
+  		color: white;
+  		text-align: center;
+  		text-decoration: none;
+  		display: inline-block;
+  		font-size: 16px;
+  		margin: -5px 30px;
+  		cursor: pointer;
+		width: 10%;
+		padding: 5px;  
+	}
+</style>
+{% endblock %}
+
+{% block afterscripts %}
+	<script type="text/javascript">	
+		$(document).ready(function () {
+			$('select').select2({
+				containerCss: {
+					"height": "100%"
+				}
+			});
+			
+			$('#reload-btn').click(function() {
+				var url = $(this).data('url'); 
+				
+				$('.filter').each(function() {
+					var value = $(this).val();
+					var name = '&filters[' + $(this).data('name') + ']';
+
+					if (url.indexOf(name)) {
+						var regexp = new RegExp('\\&filters\\[' + $(this).data('name') + '\\][^&]*', 'g');
+						url = url.replace(regexp, '');
+					}
+
+					if (Array.isArray(value)) {
+						var valueReadedFromField = value;
+						value = '';
+						valueReadedFromField.every(e => value += name + '[]=' + e);
+					} else {
+						value = name + '=' + value;
+					}
+
+					url = url + value; 
+				});
+
+				window.location.replace(url + '&resetPage=1');
+			});
+
+
+		});
+	</script>
+{% endblock %}
